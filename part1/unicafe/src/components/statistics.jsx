@@ -1,4 +1,5 @@
 import React from 'react';
+// 1.8 unicafe step 3: statistics already in their own component
 
 const Statistics = ({ good, neutral, bad }) => {
 	let totalFeedback = good + neutral + bad;
