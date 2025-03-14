@@ -1,4 +1,5 @@
 import React from 'react';
+import StatisticLine from './statistic-line';
 // 1.8 unicafe step 3: statistics already in their own component
 
 const Statistics = ({ good, neutral, bad }) => {
@@ -29,12 +30,12 @@ const Statistics = ({ good, neutral, bad }) => {
 			<h1>statistics</h1>
 			{totalFeedback > 0 ? (
 				<div>
-					<p>good: {good}</p>
-					<p>neutral: {neutral}</p>
-					<p>bad: {bad}</p>
-					<p>all: {totalFeedback}</p>
-					<p>average: {averageScore}</p>
-					<p>positive: {percentage}</p>
+					<StatisticLine text={'good:'} value={good} />
+					<StatisticLine text={'neutral:'} value={neutral} />
+					<StatisticLine text={'bad:'} value={bad} />
+					<StatisticLine text={'all:'} value={totalFeedback} />
+					<StatisticLine text={'average:'} value={averageScore} />
+					<StatisticLine text={'positive:'} value={percentage} />
 				</div>
 			) : (
 				<p>No feedback given</p>

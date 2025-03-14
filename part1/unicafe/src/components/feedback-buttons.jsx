@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './button';
 
 const FeedbackButtons = ({
 	good,
@@ -23,9 +24,9 @@ const FeedbackButtons = ({
 	return (
 		<div>
 			<h1>give feedback</h1>
-			<button onClick={handleGood}>good</button>
-			<button onClick={handleNeutral}>neutral</button>
-			<button onClick={handleBad}>bad</button>
+			<Button handle={handleGood} buttonType={'good'} />
+			<Button handle={handleNeutral} buttonType={'neutral'} />
+			<Button handle={handleBad} buttonType={'bad'} />
 		</div>
 	);
 };
