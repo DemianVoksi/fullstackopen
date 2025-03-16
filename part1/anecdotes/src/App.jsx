@@ -15,10 +15,18 @@ function App() {
 	const [selected, setSelected] = useState(0);
 
 	function getRandomAnecdote(max) {
-		return Math.floor(Math.random * max);
+		const randomNumber = Math.floor(Math.random() * max);
+		setSelected(randomNumber);
 	}
 
-	return <div>yo</div>;
+	return (
+		<div>
+			<p>{anecdotes[selected]}</p>
+			<button onClick={() => getRandomAnecdote(anecdotes.length - 1)}>
+				next anecdote
+			</button>
+		</div>
+	);
 }
 
 export default App;
