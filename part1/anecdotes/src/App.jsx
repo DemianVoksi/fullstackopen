@@ -11,20 +11,46 @@ function App() {
 		'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
 		'The only way to go fast, is to go well.',
 	];
+	const initialVotes = [0, 0, 0, 0, 0, 0, 0, 0];
 
 	const [selected, setSelected] = useState(0);
+	const [votes, setVotes] = useState(initialVotes);
 
-	function getRandomAnecdote(max) {
-		const randomNumber = Math.floor(Math.random() * max);
+	function assignVote(position) {
+		setVotes(
+			votes.map((vote, index) => {
+				if (index === position) {
+					return vote + 1;
+				} else {
+					return vote;
+				}
+			})
+		);
+	}
+
+	function getRandomAnecdote() {
+		const randomNumber = Math.floor(Math.random() * anecdotes.length);
 		setSelected(randomNumber);
+	}
+
+	function getMostPopular() {
+		const biggestNumberPosition = votes.indexOf(
+			votes.reduce((a, b) => Math.max(a, b))
+		);
+		return biggestNumberPosition;
 	}
 
 	return (
 		<div>
+			<h1>Anecdote of the day</h1>
 			<p>{anecdotes[selected]}</p>
-			<button onClick={() => getRandomAnecdote(anecdotes.length - 1)}>
-				next anecdote
-			</button>
+			<p>has {votes[selected]} votes</p>
+			<button onClick={() => assignVote(selected)}>vote</button>
+			<button onClick={() => getRandomAnecdote()}>next anecdote</button>
+			<h1>Anecdote with the most votes</h1>
+			<p>{`The most popular anecdote is "${anecdotes[getMostPopular()]}" with ${
+				votes[getMostPopular()]
+			} votes`}</p>
 		</div>
 	);
 }
