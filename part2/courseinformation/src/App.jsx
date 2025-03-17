@@ -32,6 +32,7 @@ function App() {
 	return (
 		<div>
 			<Course course={course} />
+			<Total parts={course.parts} />
 		</div>
 	);
 }
