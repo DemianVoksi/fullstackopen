@@ -3,20 +3,27 @@ import Filter from './components/filter';
 import PersonForm from './components/person-form';
 import PersonsList from './components/persons-list';
 
+import axios from 'axios';
+
 const App = () => {
-	const [persons, setPersons] = useState([
-		{ name: 'Arto Hellas', number: '070 000 0000', id: 1 },
-		{ name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-		{ name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-		{ name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 },
-	]);
+	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 	const [filteredPersons, setFilteredPersons] = useState(persons);
 
 	useEffect(() => {
-		setFilteredPersons(persons);
-	}, [persons]);
+		const fetchData = async () => {
+			try {
+				const res = await axios.get('http://localhost:3001/persons');
+				setPersons(res.data);
+				setFilteredPersons(res.data);
+				console.log('fetched data');
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchData();
+	}, []);
 
 	function checkIfNameExists(nn) {
 		const result = persons.filter((per) => per.name === nn);
