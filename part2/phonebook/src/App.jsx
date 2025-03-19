@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { addData, getData } from './backend/backendFunctions';
+import { addData, editData, getData } from './backend/backendFunctions';
 import Filter from './components/filter';
 import PersonForm from './components/person-form';
 import PersonsList from './components/persons-list';
@@ -53,11 +53,21 @@ const App = () => {
 		}
 	}
 
+	async function handleAddData() {
+		await addData(newName, newNumber);
+	}
+
+	async function handleEditData() {
+		const existingUser = persons.filter((person) => person.name === newName);
+		alert(
+			`${newName} is already added to your phonebook, replace the old number with the new one?`
+		);
+		await editData(existingUser[0].id, existingUser[0].name, newNumber);
+	}
+
 	async function addNewPerson(e) {
 		e.preventDefault();
-		checkIfNameExists(newName)
-			? alert(`"${newName}" is already added to your phonebook.`)
-			: await addData(newName, newNumber);
+		checkIfNameExists(newName) ? await handleEditData() : await handleAddData();
 		setNewName('');
 		setNewNumber('');
 		await fetchData();
@@ -76,7 +86,7 @@ const App = () => {
 				handleNumberChange={handleNumberChange}
 			/>
 			<h2>Numbers</h2>
-			<PersonsList filteredPersons={filteredPersons} />
+			<PersonsList filteredPersons={filteredPersons} fetchData={fetchData} />
 		</div>
 	);
 };

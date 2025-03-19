@@ -19,3 +19,22 @@ export const addData = async (newName, newNumber) => {
 		console.log(error);
 	}
 };
+
+export const removeData = async (id) => {
+	try {
+		await axios.delete(`http://localhost:3001/persons/${id}`);
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const editData = async (id, name, number) => {
+	try {
+		await axios.put(`http://localhost:3001/persons/${id}`, {
+			name: name,
+			number: number,
+		});
+	} catch (error) {
+		console.error(error);
+	}
+};
