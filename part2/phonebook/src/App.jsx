@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { addData, editData, getData } from './backend/backendFunctions';
 import Filter from './components/filter';
+import Notification from './components/notification';
 import PersonForm from './components/person-form';
 import PersonsList from './components/persons-list';
 
@@ -9,6 +10,7 @@ const App = () => {
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 	const [filteredPersons, setFilteredPersons] = useState(persons);
+	const [message, setMessage] = useState({ type: null, content: null });
 
 	const fetchData = async () => {
 		const data = await getData();
@@ -54,7 +56,7 @@ const App = () => {
 	}
 
 	async function handleAddData() {
-		await addData(newName, newNumber);
+		await addData(newName, newNumber, setMessage);
 	}
 
 	async function handleEditData() {
@@ -62,7 +64,12 @@ const App = () => {
 		alert(
 			`${newName} is already added to your phonebook, replace the old number with the new one?`
 		);
-		await editData(existingUser[0].id, existingUser[0].name, newNumber);
+		await editData(
+			existingUser[0].id,
+			existingUser[0].name,
+			newNumber,
+			setMessage
+		);
 	}
 
 	async function addNewPerson(e) {
@@ -75,6 +82,7 @@ const App = () => {
 
 	return (
 		<div>
+			<Notification message={message} />
 			<h2>Phonebook</h2>
 			<Filter filterPersons={filterPersons} />
 			<h2>Add a new person & number</h2>
@@ -86,7 +94,11 @@ const App = () => {
 				handleNumberChange={handleNumberChange}
 			/>
 			<h2>Numbers</h2>
-			<PersonsList filteredPersons={filteredPersons} fetchData={fetchData} />
+			<PersonsList
+				filteredPersons={filteredPersons}
+				fetchData={fetchData}
+				setMessage={setMessage}
+			/>
 		</div>
 	);
 };

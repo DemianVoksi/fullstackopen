@@ -1,9 +1,9 @@
 import React from 'react';
 import { removeData } from '../backend/backendFunctions';
 
-const PersonsList = ({ filteredPersons, fetchData }) => {
-	const handleRemove = async (id) => {
-		await removeData(id);
+const PersonsList = ({ filteredPersons, fetchData, setMessage }) => {
+	const handleRemove = async (id, setMessage, name) => {
+		await removeData(id, setMessage, name);
 		await fetchData();
 	};
 
@@ -19,7 +19,11 @@ const PersonsList = ({ filteredPersons, fetchData }) => {
 				>
 					<p style={{ marginRight: '5px' }}>{person.name}</p>
 					<p style={{ marginRight: '5px' }}>{person.number}</p>
-					<button onClick={() => handleRemove(person.id)}>delete</button>
+					<button
+						onClick={() => handleRemove(person.id, setMessage, person.name)}
+					>
+						delete
+					</button>
 				</div>
 			))}
 		</div>
