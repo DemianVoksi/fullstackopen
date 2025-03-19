@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
+import { addData, getData } from './backend/backendFunctions';
 import Filter from './components/filter';
 import PersonForm from './components/person-form';
 import PersonsList from './components/persons-list';
-
-import axios from 'axios';
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
@@ -11,18 +10,17 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('');
 	const [filteredPersons, setFilteredPersons] = useState(persons);
 
+	const fetchData = async () => {
+		const data = await getData();
+		setPersons(data);
+		setFilteredPersons(data);
+	};
+
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const res = await axios.get('http://localhost:3001/persons');
-				setPersons(res.data);
-				setFilteredPersons(res.data);
-				console.log('fetched data');
-			} catch (error) {
-				console.error(error);
-			}
+		const trigger = async () => {
+			await fetchData();
 		};
-		fetchData();
+		trigger();
 	}, []);
 
 	function checkIfNameExists(nn) {
@@ -32,15 +30,6 @@ const App = () => {
 		} else {
 			return true;
 		}
-	}
-
-	function addNewPerson(e) {
-		e.preventDefault();
-		checkIfNameExists(newName)
-			? alert(`"${newName}" is already added to your phonebook.`)
-			: setPersons([...persons, { name: newName, number: newNumber }]);
-		setNewName('');
-		setNewNumber('');
 	}
 
 	function handleNameChange(e) {
@@ -62,6 +51,16 @@ const App = () => {
 			const filtered = persons.filter((person) => person.name.includes(search));
 			setFilteredPersons(filtered);
 		}
+	}
+
+	async function addNewPerson(e) {
+		e.preventDefault();
+		checkIfNameExists(newName)
+			? alert(`"${newName}" is already added to your phonebook.`)
+			: await addData(newName, newNumber);
+		setNewName('');
+		setNewNumber('');
+		await fetchData();
 	}
 
 	return (
