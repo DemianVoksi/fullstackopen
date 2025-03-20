@@ -1,7 +1,4 @@
-// `https://studies.cs.helsinki.fi/restcountries/api/name/${country}`
-//`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${api_key}`
 import axios from 'axios';
-
 import { useEffect, useState } from 'react';
 import Search from './components/search';
 
@@ -18,7 +15,9 @@ function App() {
 
 	function filterCountries(e) {
 		e.preventDefault();
-		const search = e.target.value;
+		const value = e.target.value;
+		const search = value[0].toUpperCase() + value.slice(1);
+
 		if (search === '') {
 			setFilteredCountries(allCountries);
 		} else {
@@ -38,6 +37,7 @@ function App() {
 			<Search
 				filterCountries={filterCountries}
 				filteredCountries={filteredCountries}
+				setFilteredCountries={setFilteredCountries}
 			/>
 		</div>
 	);
