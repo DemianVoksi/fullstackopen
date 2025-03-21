@@ -1,4 +1,5 @@
 const express = require('express');
+const { requestLogger } = require('./middleware');
 const app = express();
 
 let persons = [
@@ -30,13 +31,13 @@ let persons = [
 ];
 
 const currentDateTime = new Date().toString();
-
 function getRandomId() {
 	const id = Math.floor(Math.random() * 1000);
 	return id;
 }
 
 app.use(express.json());
+app.use(requestLogger);
 
 app.get('/', (request, response) => {
 	response.send('<h1>Welcome to phonebook backend.</h1>');
