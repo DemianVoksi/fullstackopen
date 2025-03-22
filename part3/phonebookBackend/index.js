@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const { requestLogger } = require('./middleware');
 const app = express();
 
@@ -32,11 +33,12 @@ let persons = [
 
 const currentDateTime = new Date().toString();
 function getRandomId() {
-	const id = Math.floor(Math.random() * 1000);
+	const id = Math.floor(Math.random() * 1000).toString();
 	return id;
 }
 
 app.use(express.json());
+app.use(cors());
 app.use(requestLogger);
 
 app.get('/', (request, response) => {
@@ -80,9 +82,9 @@ app.post('/api/persons', (request, response) => {
 		});
 	} else {
 		const person = {
-			id: getRandomId(),
 			name: body.name,
 			number: body.number,
+			id: getRandomId(),
 		};
 
 		persons = persons.concat(person);

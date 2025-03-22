@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getData = async () => {
 	try {
-		const res = await axios.get('http://localhost:3001/persons');
+		const res = await axios.get('http://localhost:3001/api/persons');
 		return res.data;
 	} catch (error) {
 		console.error(error);
@@ -11,7 +11,7 @@ export const getData = async () => {
 
 export const addData = async (newName, newNumber, setMessage) => {
 	try {
-		await axios.post('http://localhost:3001/persons', {
+		await axios.post('http://localhost:3001/api/persons', {
 			name: newName,
 			number: newNumber,
 		});
@@ -26,7 +26,7 @@ export const addData = async (newName, newNumber, setMessage) => {
 
 export const removeData = async (id, setMessage, name) => {
 	try {
-		await axios.delete(`http://localhost:3001/persons/${id}`);
+		await axios.delete(`http://localhost:3001/api/persons/${id}`);
 	} catch (error) {
 		console.error(error);
 		setMessage({
@@ -41,7 +41,7 @@ export const removeData = async (id, setMessage, name) => {
 
 export const editData = async (id, name, number, setMessage) => {
 	try {
-		await axios.put(`http://localhost:3001/persons/${id}`, {
+		await axios.put(`http://localhost:3001/api/persons/${id}`, {
 			name: name,
 			number: number,
 		});
