@@ -1,5 +1,3 @@
-// https://fullstackopen-phonebook-backend-j10l.onrender.com/api/persons
-
 import axios from 'axios';
 
 export const getData = async () => {
