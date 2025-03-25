@@ -28,6 +28,9 @@ export const removeData = async (id, setMessage, name) => {
 	try {
 		await axios.delete(`/api/persons/${id}`);
 		setMessage({ type: 'delete', content: `Deleted ${name}` });
+		setTimeout(() => {
+			setMessage({ type: null, content: null });
+		}, 3000);
 		return true;
 	} catch (error) {
 		console.error(error);
