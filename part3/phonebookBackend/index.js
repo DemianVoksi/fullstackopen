@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { requestLogger } = require('./middleware');
+const { requestLogger, errorHandler } = require('./middleware');
 const {
 	Person,
 	getAllPersons,
@@ -65,19 +65,17 @@ app.get('/api/persons', async (request, response) => {
 	response.json(persons);
 });
 
-app.get('/api/persons/:id', async (request, response) => {
+app.get('/api/persons/:id', async (request, response, next) => {
 	try {
 		const id = request.params.id;
 		const person = await getPersonById(id);
 		if (person) {
-			response.json(person).status(200).end();
+			response.json(person);
 		} else {
-			response.status(400).json({
-				error: 'content missing',
-			});
+			response.status(404).end();
 		}
 	} catch (error) {
-		console.error(error);
+		next(error);
 	}
 });
 
@@ -104,6 +102,8 @@ app.delete('/api/persons/:id', (request, response) => {
 	deletePerson(id);
 	response.status(204).end();
 });
+
+app.use(errorHandler);
 
 const PORT = 3001;
 app.listen(PORT, () => {
