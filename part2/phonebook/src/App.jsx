@@ -65,7 +65,7 @@ const App = () => {
 			`${newName} is already added to your phonebook, replace the old number with the new one?`
 		);
 		await editData(
-			existingUser[0].id,
+			existingUser[0]._id,
 			existingUser[0].name,
 			newNumber,
 			setMessage

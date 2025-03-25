@@ -7,6 +7,7 @@ const {
 	getPersonById,
 	addPerson,
 	deletePerson,
+	updatePerson,
 } = require('./mongo');
 const app = express();
 
@@ -79,21 +80,31 @@ app.get('/api/persons/:id', async (request, response, next) => {
 	}
 });
 
-app.post('/api/persons', async (request, response) => {
-	const body = request.body;
-	const names = persons.map((person) => person.name);
+app.put('/api/persons/:id', async (request, response, next) => {
+	try {
+		const id = request.params.id;
+		const { name, number } = request.body;
+		await updatePerson(id, name, number);
+		response.status(200).end();
+	} catch (error) {
+		next(error);
+	}
+});
 
-	if (!body.name || !body.number) {
-		response.status(400).json({
-			error: 'Provided information is incomplete',
-		});
-	} else if (names.includes(body.name)) {
-		response.status(400).json({
-			error: `${body.name} is already in the Phonebook. Name must be unique.`,
-		});
-	} else {
-		const result = await addPerson(body.name, body.number);
-		response.json(result);
+app.post('/api/persons', async (request, response, next) => {
+	try {
+		const { name, number } = request.body;
+
+		if (!name || !number) {
+			return response.status(400).json({
+				error: 'Provided information is incomplete',
+			});
+		}
+
+		const result = await addPerson(name, number);
+		response.status(201).json(result);
+	} catch (error) {
+		next(error);
 	}
 });
 

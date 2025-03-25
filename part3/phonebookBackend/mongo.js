@@ -36,6 +36,19 @@ async function addPerson(name, number) {
 	return await person.save();
 }
 
+async function updatePerson(id, name, number) {
+	try {
+		const updatedPerson = await Person.findByIdAndUpdate(
+			id,
+			{ name, number },
+			{ new: true }
+		);
+		return updatedPerson;
+	} catch (error) {
+		throw error;
+	}
+}
+
 async function deletePerson(id) {
 	const result = await Person.findByIdAndDelete(id);
 	return result;
@@ -66,4 +79,5 @@ module.exports = {
 	getPersonById,
 	deletePerson,
 	addPerson,
+	updatePerson,
 };
