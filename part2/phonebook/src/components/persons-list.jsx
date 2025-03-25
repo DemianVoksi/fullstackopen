@@ -3,8 +3,10 @@ import { removeData } from '../backend/backendFunctions';
 
 const PersonsList = ({ filteredPersons, fetchData, setMessage }) => {
 	const handleRemove = async (id, setMessage, name) => {
-		await removeData(id, setMessage, name);
-		await fetchData();
+		const success = await removeData(id, setMessage, name);
+		if (success) {
+			await fetchData();
+		}
 	};
 
 	return (

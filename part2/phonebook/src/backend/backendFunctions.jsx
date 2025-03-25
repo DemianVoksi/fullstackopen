@@ -27,6 +27,8 @@ export const addData = async (newName, newNumber, setMessage) => {
 export const removeData = async (id, setMessage, name) => {
 	try {
 		await axios.delete(`/api/persons/${id}`);
+		setMessage({ type: 'delete', content: `Deleted ${name}` });
+		return true;
 	} catch (error) {
 		console.error(error);
 		setMessage({
@@ -36,6 +38,7 @@ export const removeData = async (id, setMessage, name) => {
 		setTimeout(() => {
 			setMessage({ type: null, content: null });
 		}, 3000);
+		return false;
 	}
 };
 
