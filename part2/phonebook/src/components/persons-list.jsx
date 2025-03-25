@@ -3,9 +3,18 @@ import { removeData } from '../backend/backendFunctions';
 
 const PersonsList = ({ filteredPersons, fetchData, setMessage }) => {
 	const handleRemove = async (id, setMessage, name) => {
-		const success = await removeData(id, setMessage, name);
-		if (success) {
-			await fetchData();
+		if (window.confirm(`Delete ${name}?`)) {
+			try {
+				const success = await removeData(id, setMessage, name);
+				if (success) {
+					await fetchData();
+				}
+			} catch (error) {
+				setMessage({
+					type: 'error',
+					content: 'Connection error - could not delete person',
+				});
+			}
 		}
 	};
 
@@ -22,7 +31,7 @@ const PersonsList = ({ filteredPersons, fetchData, setMessage }) => {
 					<p style={{ marginRight: '5px' }}>{person.name}</p>
 					<p style={{ marginRight: '5px' }}>{person.number}</p>
 					<button
-						onClick={() => handleRemove(person.id, setMessage, person.name)}
+						onClick={() => handleRemove(person._id, setMessage, person.name)}
 					>
 						delete
 					</button>
