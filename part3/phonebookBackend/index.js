@@ -1,6 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const { requestLogger } = require('./middleware');
+const {
+	Person,
+	getAllPersons,
+	getPersonById,
+	addPerson,
+	deletePerson,
+} = require('./mongo');
 const app = express();
 
 let persons = [
@@ -53,23 +60,28 @@ app.get('/info', (request, response) => {
 		`);
 });
 
-app.get('/api/persons', (request, response) => {
-	response.send(persons);
+app.get('/api/persons', async (request, response) => {
+	const persons = await getAllPersons();
+	response.json(persons);
 });
 
-app.get('/api/persons/:id', (request, response) => {
-	const id = request.params.id;
-	const person = persons.find((person) => person.id === id);
-	if (person) {
-		response.send(person).status(200).end();
-	} else {
-		response.status(400).json({
-			error: 'content missing',
-		});
+app.get('/api/persons/:id', async (request, response) => {
+	try {
+		const id = request.params.id;
+		const person = await getPersonById(id);
+		if (person) {
+			response.json(person).status(200).end();
+		} else {
+			response.status(400).json({
+				error: 'content missing',
+			});
+		}
+	} catch (error) {
+		console.error(error);
 	}
 });
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', async (request, response) => {
 	const body = request.body;
 	const names = persons.map((person) => person.name);
 
@@ -82,20 +94,14 @@ app.post('/api/persons', (request, response) => {
 			error: `${body.name} is already in the Phonebook. Name must be unique.`,
 		});
 	} else {
-		const person = {
-			name: body.name,
-			number: body.number,
-			id: getRandomId(),
-		};
-
-		persons = persons.concat(person);
-		response.json(person);
+		const result = await addPerson(body.name, body.number);
+		response.json(result);
 	}
 });
 
 app.delete('/api/persons/:id', (request, response) => {
 	const id = request.params.id;
-	persons = persons.filter((person) => person.id !== id);
+	deletePerson(id);
 	response.status(204).end();
 });
 
