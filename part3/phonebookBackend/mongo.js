@@ -8,7 +8,7 @@ mongoose.connect(process.env.MONGO_URL, {
 	dbName: 'fullstackopen',
 });
 
-const password = process.argv[2];
+// const password = process.argv[2];
 const personSchema = new mongoose.Schema(
 	{
 		name: {
@@ -59,7 +59,7 @@ async function updatePerson(id, name, number) {
 		);
 		return updatedPerson;
 	} catch (error) {
-		throw error;
+		console.log(error);
 	}
 }
 
@@ -73,7 +73,7 @@ if (argv.length === 5) {
 		name: argv[3],
 		number: argv[4],
 	});
-	newPerson.save().then((result) => {
+	newPerson.save().then(() => {
 		mongoose.connection.close();
 	});
 	console.log(`added ${argv[3]} number ${argv[4]} to phonebook`);
