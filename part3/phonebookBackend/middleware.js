@@ -17,6 +17,9 @@ const errorHandler = (error, request, response, next) => {
 	if (error.message === 'CastError') {
 		return response.status(400).send({ error: 'malformed id' });
 	}
+	if (error.message === 'ValidationError') {
+		return response.status(400).sned({ error: error.message });
+	}
 
 	next(error);
 };

@@ -20,6 +20,18 @@ export const addData = async (newName, newNumber, setMessage) => {
 			setMessage({ type: null, content: null });
 		}, 3000);
 	} catch (error) {
+		setMessage({
+			type: 'error',
+			content: error.response.data.includes('ValidationError')
+				? error.response.data
+						.split('<pre>')[1]
+						.split('</pre')[0]
+						.split('<br>')[0]
+				: 'An error occured',
+		});
+		setTimeout(() => {
+			setMessage({ type: null, content: null });
+		}, 3000);
 		console.log(error);
 	}
 };
@@ -56,6 +68,18 @@ export const editData = async (id, name, number, setMessage) => {
 			setMessage({ type: null, content: null });
 		}, 3000);
 	} catch (error) {
+		setMessage({
+			type: 'error',
+			content: error.response.data.includes('ValidationError')
+				? error.response.data
+						.split('<pre>')[1]
+						.split('</pre')[0]
+						.split('<br>')[0]
+				: 'An error occured',
+		});
+		setTimeout(() => {
+			setMessage({ type: null, content: null });
+		}, 3000);
 		console.error(error);
 	}
 };

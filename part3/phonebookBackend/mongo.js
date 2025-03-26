@@ -11,8 +11,22 @@ mongoose.connect(process.env.MONGO_URL, {
 const password = process.argv[2];
 const personSchema = new mongoose.Schema(
 	{
-		name: String,
-		number: String,
+		name: {
+			type: String,
+			minLength: 3,
+			required: true,
+		},
+		number: {
+			type: String,
+			required: true,
+			validate: {
+				validator: function (v) {
+					return /^([0-9]{2,3})-([0-9]{7,8})$/.test(v);
+				},
+				message: (props) =>
+					`${props.value} is not a valid phone number! Format should be XX-XXXXXXX or XXX-XXXXXXXX`,
+			},
+		},
 	},
 	{ collection: 'people' }
 );
@@ -41,7 +55,7 @@ async function updatePerson(id, name, number) {
 		const updatedPerson = await Person.findByIdAndUpdate(
 			id,
 			{ name, number },
-			{ new: true }
+			{ new: true, runValidators: true }
 		);
 		return updatedPerson;
 	} catch (error) {
