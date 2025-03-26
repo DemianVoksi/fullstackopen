@@ -22,12 +22,7 @@ export const addData = async (newName, newNumber, setMessage) => {
 	} catch (error) {
 		setMessage({
 			type: 'error',
-			content: error.response.data.includes('ValidationError')
-				? error.response.data
-						.split('<pre>')[1]
-						.split('</pre')[0]
-						.split('<br>')[0]
-				: 'An error occured',
+			content: error.message,
 		});
 		setTimeout(() => {
 			setMessage({ type: null, content: null });
@@ -70,12 +65,7 @@ export const editData = async (id, name, number, setMessage) => {
 	} catch (error) {
 		setMessage({
 			type: 'error',
-			content: error.response.data.includes('ValidationError')
-				? error.response.data
-						.split('<pre>')[1]
-						.split('</pre')[0]
-						.split('<br>')[0]
-				: 'An error occured',
+			content: error.message,
 		});
 		setTimeout(() => {
 			setMessage({ type: null, content: null });

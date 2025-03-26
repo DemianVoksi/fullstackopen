@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { requestLogger, errorHandler } = require('./middleware');
 const {
-	Person,
+	// Person,
 	getAllPersons,
 	getPersonById,
 	addPerson,
@@ -12,10 +12,10 @@ const {
 const app = express();
 
 const currentDateTime = new Date().toString();
-function getRandomId() {
-	const id = Math.floor(Math.random() * 1000).toString();
-	return id;
-}
+// function getRandomId() {
+// 	const id = Math.floor(Math.random() * 1000).toString();
+// 	return id;
+// }
 
 app.use(express.json());
 app.use(cors());
