@@ -16,7 +16,12 @@ const totalLikes = (blogs) => {
 	}
 };
 
+const favoriteBlog = (blogs) => {
+	return blogs.reduce((max, blog) => (blog.likes > max.likes ? blog : max));
+};
+
 module.exports = {
 	dummy,
 	totalLikes,
+	favoriteBlog,
 };
