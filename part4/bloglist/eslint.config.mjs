@@ -15,6 +15,7 @@ export default [
 			'@stylistic/js': stylisticJs,
 		},
 		rules: {
+			'no-unused-vars': 'off',
 			'@stylistic/js/indent': ['error', 'tab'],
 			'@stylistic/js/linebreak-style': ['error', 'unix'],
 			'@stylistic/js/quotes': ['error', 'single'],
