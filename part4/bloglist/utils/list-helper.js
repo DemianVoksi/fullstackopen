@@ -20,8 +20,27 @@ const favoriteBlog = (blogs) => {
 	return blogs.reduce((max, blog) => (blog.likes > max.likes ? blog : max));
 };
 
+const mostBlogs = (blogs) => {
+	const appearances = [];
+
+	blogs.forEach((blog) =>
+		!appearances.find((item) => item.author === blog.author)
+			? appearances.push({
+					author: blog.author,
+					blogs: 1,
+			  })
+			: appearances.map((ap) => (ap.author === blog.author ? ap.blogs++ : null))
+	);
+
+	const result = appearances.reduce((max, blog) =>
+		blog.blogs > max.blogs ? blog : max
+	);
+	return result;
+};
+
 module.exports = {
 	dummy,
 	totalLikes,
 	favoriteBlog,
+	mostBlogs,
 };
