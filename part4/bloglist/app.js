@@ -12,7 +12,7 @@ mongoose.set('strictQuery', false);
 logger.info('connecting to', config.MONGO_URL);
 
 mongoose
-	.connect(config.MONGO_URL, { dbName: 'fullstackopen' })
+	.connect(config.MONGO_URL, { dbName: config.databaseName })
 	.then(() => {
 		logger.info('connected to MongoDB');
 	})
