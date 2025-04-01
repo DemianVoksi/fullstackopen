@@ -25,10 +25,7 @@ const mostBlogs = (blogs) => {
 
 	blogs.forEach((blog) =>
 		!appearances.find((item) => item.author === blog.author)
-			? appearances.push({
-					author: blog.author,
-					blogs: 1,
-			  })
+			? appearances.push({ author: blog.author, blogs: 1 })
 			: appearances.map((ap) => (ap.author === blog.author ? ap.blogs++ : null))
 	);
 
@@ -38,9 +35,25 @@ const mostBlogs = (blogs) => {
 	return result;
 };
 
+const mostLikes = (blogs) => {
+	const appearances = [];
+	blogs.forEach((blog) => {
+		!appearances.find((item) => item.author === blog.author)
+			? appearances.push({ author: blog.author, likes: blog.likes })
+			: appearances.forEach((ap) => {
+					ap.author === blog.author ? (ap.likes = ap.likes + blog.likes) : null;
+			  });
+	});
+	const result = appearances.reduce((prev, curr) =>
+		prev.likes > curr.likes ? prev : curr
+	);
+	return result;
+};
+
 module.exports = {
 	dummy,
 	totalLikes,
 	favoriteBlog,
 	mostBlogs,
+	mostLikes,
 };
