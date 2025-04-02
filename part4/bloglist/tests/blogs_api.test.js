@@ -13,7 +13,7 @@ test('notes are returned as json', async () => {
 		.expect('Content-Type', /application\/json/);
 });
 
-test.only('there are three blogs', async () => {
+test('there are three blogs', async () => {
 	const response = await api.get('/api/blogs');
 
 	assert.strictEqual(response.body.length, 3);
@@ -24,6 +24,14 @@ test('the first note is about HTTP methods', async () => {
 
 	const title = response.body.map((e) => e.title);
 	assert.strictEqual(title.includes('HTML is easy'), true);
+});
+
+test.only('has unique identifier', async () => {
+	const response = await api.get('/api/blogs');
+	const keys = await response.body.map((blog) => Object.keys(blog));
+	keys.forEach((k) => {
+		assert.strictEqual(k.includes('id'), true);
+	});
 });
 
 after(async () => {
