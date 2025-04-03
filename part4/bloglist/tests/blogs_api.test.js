@@ -104,7 +104,7 @@ test('api POST works', async () => {
 	assert.strictEqual(response.body.length, initialBlogs.length + 1);
 });
 
-test.only('no likes submitted', async () => {
+test('no likes submitted', async () => {
 	const newBlog = {
 		_id: '6a422b833b54a696234d17fb',
 		title: 'Likes 0',
@@ -122,7 +122,7 @@ test.only('no likes submitted', async () => {
 	assert.strictEqual(response.body[response.body.length - 1].likes, 0);
 });
 
-test.only('no url/title response is 400', async () => {
+test('no url/title response is 400', async () => {
 	const newBlog = {
 		_id: '6a422b833b54a696234d17fb',
 		author: 'Robert Lobert',
@@ -139,6 +139,13 @@ test.only('no url/title response is 400', async () => {
 	assert.strictEqual(request.body.error, 'bad request');
 	const response = await api.get('/api/blogs');
 	assert.strictEqual(response.body.length, initialBlogs.length);
+});
+
+test.only('delete works', async () => {
+	const id = initialBlogs[0]._id;
+	const request = await api.delete(`/api/blogs/${id}`).expect(204);
+	const response = await api.get('/api/blogs');
+	assert.strictEqual(response.body.length, initialBlogs.length - 1);
 });
 
 beforeEach(async () => {
