@@ -85,7 +85,7 @@ test('has unique identifier', async () => {
 	});
 });
 
-test.only('api POST works', async () => {
+test('api POST works', async () => {
 	const newBlog = {
 		_id: '6a422b891b54a696234d17fb',
 		title: 'Some more tests',
@@ -102,6 +102,24 @@ test.only('api POST works', async () => {
 		.expect('Content-Type', /application\/json/);
 	const response = await api.get('/api/blogs');
 	assert.strictEqual(response.body.length, initialBlogs.length + 1);
+});
+
+test.only('no likes submitted', async () => {
+	const newBlog = {
+		_id: '6a422b833b54a696234d17fb',
+		title: 'Likes 0',
+		author: 'Robert Lobert',
+		url: 'http://example.com',
+		__v: 0,
+	};
+
+	await api
+		.post('/api/blogs')
+		.send(newBlog)
+		.expect(201)
+		.expect('Content-Type', /application\/json/);
+	const response = await api.get('/api/blogs');
+	assert.strictEqual(response.body[response.body.length - 1].likes, 0);
 });
 
 beforeEach(async () => {
