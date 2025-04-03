@@ -148,6 +148,24 @@ test.only('delete works', async () => {
 	assert.strictEqual(response.body.length, initialBlogs.length - 1);
 });
 
+test.only('update works', async () => {
+	const id = initialBlogs[0]._id;
+	const newBlog = {
+		title: 'React patterns',
+		author: 'Michael Chan',
+		url: 'https://reactpatterns.com/',
+		likes: 10,
+	};
+
+	const request = await api
+		.put(`/api/blogs/${id}`)
+		.send(newBlog)
+		.expect(200)
+		.expect('Content-Type', /application\/json/);
+	const response = await api.get('/api/blogs');
+	assert.strictEqual(response.body[0].likes, 10);
+});
+
 beforeEach(async () => {
 	await Blog.deleteMany({});
 	let blogObject = new Blog(initialBlogs[0]);

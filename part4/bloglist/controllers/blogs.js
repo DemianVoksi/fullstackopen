@@ -27,13 +27,28 @@ blogsRouter.post('/', async (request, response, next) => {
 	}
 });
 
+blogsRouter.put('/:id', async (request, response) => {
+	try {
+		const id = request.params.id;
+		const { title, author, url, likes } = request.body;
+		const updatedBlog = await Blog.findByIdAndUpdate(
+			id,
+			{ title, author, url, likes },
+			{ new: true, runValidators: true }
+		);
+		response.status(200).json(updatedBlog).end();
+	} catch (error) {
+		errorHandler(error);
+	}
+});
+
 blogsRouter.delete('/:id', async (request, response, next) => {
 	try {
 		const id = request.params.id;
 		const result = await Blog.findByIdAndDelete(id);
 		return response.status(204).end();
 	} catch (error) {
-		next(error);
+		errorHandler(error);
 	}
 });
 
