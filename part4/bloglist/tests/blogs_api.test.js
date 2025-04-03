@@ -122,6 +122,25 @@ test.only('no likes submitted', async () => {
 	assert.strictEqual(response.body[response.body.length - 1].likes, 0);
 });
 
+test.only('no url/title response is 400', async () => {
+	const newBlog = {
+		_id: '6a422b833b54a696234d17fb',
+		author: 'Robert Lobert',
+		likes: 7,
+		__v: 0,
+	};
+
+	const request = await api
+		.post('/api/blogs')
+		.send(newBlog)
+		.expect(400)
+		.expect('Content-Type', /application\/json/);
+
+	assert.strictEqual(request.body.error, 'bad request');
+	const response = await api.get('/api/blogs');
+	assert.strictEqual(response.body.length, initialBlogs.length);
+});
+
 beforeEach(async () => {
 	await Blog.deleteMany({});
 	let blogObject = new Blog(initialBlogs[0]);

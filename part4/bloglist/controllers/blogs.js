@@ -9,15 +9,18 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response, next) => {
 	try {
-		if (request.body.likes) {
-			const blog = new Blog(request.body);
-			const result = await blog.save();
-			response.status(201).json(result);
-		} else {
+		if (!request.body.title || !request.body.url) {
+			return response.status(400).json({ error: 'bad request' });
+		}
+		if (!request.body.likes) {
 			let blog = new Blog(request.body);
 			blog.likes = 0;
 			const result = await blog.save();
-			response.status(201).json(result);
+			return response.status(201).json(result);
+		} else {
+			const blog = new Blog(request.body);
+			const result = await blog.save();
+			return response.status(201).json(result);
 		}
 	} catch (error) {
 		errorHandler(error, request, response, next);
