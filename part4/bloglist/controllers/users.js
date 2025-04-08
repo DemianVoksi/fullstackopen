@@ -15,16 +15,13 @@ usersRouter.post('/', async (request, response, next) => {
 			username: request.body.username,
 		});
 
-		bcrypt.hash(request.body.password, 10, async (error, hashedPassword) => {
-			if (error) {
-				return next(error);
-			}
-			user.set('password', hashedPassword);
-			await user.save();
-			return response.status(201).json(user);
-		});
+		const salt = await bcrypt.genSalt(10);
+		const hash = await bcrypt.hash(request.body.password, salt);
+		user.set('password', hash);
+		await user.save();
+		return response.status(201).json(user);
 	} catch (error) {
-		errorHandler(error);
+		next(error);
 	}
 });
 

@@ -4,8 +4,10 @@ const supertest = require('supertest');
 const app = require('../app');
 const assert = require('node:assert');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const api = supertest(app);
+
 const initialBlogs = [
 	{
 		_id: '5a422a851b54a676234d17f7',
@@ -141,14 +143,14 @@ test('no url/title response is 400', async () => {
 	assert.strictEqual(response.body.length, initialBlogs.length);
 });
 
-test.only('delete works', async () => {
+test('delete works', async () => {
 	const id = initialBlogs[0]._id;
 	const request = await api.delete(`/api/blogs/${id}`).expect(204);
 	const response = await api.get('/api/blogs');
 	assert.strictEqual(response.body.length, initialBlogs.length - 1);
 });
 
-test.only('update works', async () => {
+test('update works', async () => {
 	const id = initialBlogs[0]._id;
 	const newBlog = {
 		title: 'React patterns',
