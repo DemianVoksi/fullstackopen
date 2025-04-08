@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const { errorHandler } = require('../utils/middleware');
+const User = require('../models/user');
 
 blogsRouter.get('/', async (request, response) => {
 	const blogs = await Blog.find({});
@@ -8,19 +9,28 @@ blogsRouter.get('/', async (request, response) => {
 });
 
 blogsRouter.post('/', async (request, response, next) => {
+	let body = request.body;
+	const user = await User.findById(body.userId);
+
 	try {
-		if (!request.body.title || !request.body.url) {
+		if (!body.title || !body.url) {
 			return response.status(400).json({ error: 'bad request' });
 		}
-		if (!request.body.likes) {
-			let blog = new Blog(request.body);
-			blog.likes = 0;
-			const result = await blog.save();
-			return response.status(201).json(result);
+		if (!body.likes) {
+			body.likes = 0;
+			const blog = new Blog({ content: body, user: user.id });
+			const resultBlog = await blog.save();
+
+			user.notes = user.notes.concat(resultBlog._id);
+			await user.save();
+			return response.status(201).json(resultBlog);
 		} else {
-			const blog = new Blog(request.body);
-			const result = await blog.save();
-			return response.status(201).json(result);
+			const blog = new Blog({ content: body, user: user.id });
+			const resultBlog = await blog.save();
+
+			user.notes = user.notes.concat(resultBlog._id);
+			await user.save();
+			return response.status(201).json(resultBlog);
 		}
 	} catch (error) {
 		errorHandler(error, request, response, next);

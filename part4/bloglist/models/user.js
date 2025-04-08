@@ -9,7 +9,13 @@ const userSchema = new mongoose.Schema(
 			minLength: 3,
 		},
 		name: String,
-		password: String,
+		password: { type: String, required: true, minLength: 3 },
+		blogs: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Blog',
+			},
+		],
 	},
 	{ collection: 'users' }
 );
@@ -19,7 +25,7 @@ userSchema.set('toJSON', {
 		returnedObject.id = returnedObject._id.toString();
 		delete returnedObject._id;
 		delete returnedObject.__v;
-		delete returnedObject.passwordHash;
+		delete returnedObject.password;
 	},
 });
 
