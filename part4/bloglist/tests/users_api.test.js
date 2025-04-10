@@ -54,6 +54,19 @@ test.only('username < 3 characters does not get uploaded to db', async () => {
 	assert.strictEqual(usersAtEnd.length, 1);
 });
 
+test.only('password < 3 characters does not get uploaded to db', async () => {
+	const testUser = {
+		username: 'yes',
+		name: 'yes',
+		password: 'no',
+		blogs: [],
+	};
+
+	const request = await api.post('/api/users').send(testUser).expect(400);
+	const usersAtEnd = await User.find({});
+	assert.strictEqual(usersAtEnd.length, 1);
+});
+
 beforeEach(async () => {
 	await User.deleteMany({});
 	let userObject = new User(initialUsers[0]);

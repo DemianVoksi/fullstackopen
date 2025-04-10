@@ -15,11 +15,16 @@ usersRouter.post('/', async (request, response, next) => {
 			username: request.body.username,
 		});
 
-		const salt = await bcrypt.genSalt(10);
-		const hash = await bcrypt.hash(request.body.password, salt);
-		user.set('password', hash);
-		await user.save();
-		return response.status(201).json(user);
+		if (request.body.password.length < 3) {
+			console.error('Password not long enough');
+			return response.status(400).end();
+		} else {
+			const salt = await bcrypt.genSalt(10);
+			const hash = await bcrypt.hash(request.body.password, salt);
+			user.set('password', hash);
+			await user.save();
+			return response.status(201).json(user);
+		}
 	} catch (error) {
 		next(error);
 	}
