@@ -10,52 +10,25 @@ const api = supertest(app);
 
 const initialBlogs = [
 	{
+		content: {
+			title: 'React patterns',
+			author: 'Michael Chan',
+			user: '67f947e61491a735492f739e',
+			url: 'https://reactpatterns.com/',
+			likes: 7,
+		},
 		_id: '5a422a851b54a676234d17f7',
-		title: 'React patterns',
-		author: 'Michael Chan',
-		url: 'https://reactpatterns.com/',
-		likes: 7,
 		__v: 0,
 	},
+];
+
+const initialUsers = [
 	{
-		_id: '5a422aa71b54a676234d17f8',
-		title: 'Go To Statement Considered Harmful',
-		author: 'Edsger W. Dijkstra',
-		url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-		likes: 5,
-		__v: 0,
-	},
-	{
-		_id: '5a422b3a1b54a676234d17f9',
-		title: 'Canonical string reduction',
-		author: 'Edsger W. Dijkstra',
-		url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-		likes: 12,
-		__v: 0,
-	},
-	{
-		_id: '5a422b891b54a676234d17fa',
-		title: 'First class tests',
-		author: 'Robert C. Martin',
-		url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-		likes: 10,
-		__v: 0,
-	},
-	{
-		_id: '5a422ba71b54a676234d17fb',
-		title: 'TDD harms architecture',
-		author: 'Robert C. Martin',
-		url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-		likes: 0,
-		__v: 0,
-	},
-	{
-		_id: '5a422bc61b54a676234d17fc',
-		title: 'Type wars',
-		author: 'Robert C. Martin',
-		url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-		likes: 2,
-		__v: 0,
+		username: 'DemianV',
+		name: 'DemianV',
+		password: 'whiqdewni',
+		blogs: [],
+		_id: '67f947e61491a735492f739e',
 	},
 ];
 
@@ -79,7 +52,7 @@ test('the first note is about HTTP methods', async () => {
 	assert.strictEqual(title.includes('HTML is easy'), true);
 });
 
-test('has unique identifier', async () => {
+test.only('has unique identifier', async () => {
 	const response = await api.get('/api/blogs');
 	const keys = await response.body.map((blog) => Object.keys(blog));
 	keys.forEach((k) => {
@@ -170,18 +143,21 @@ test('update works', async () => {
 
 beforeEach(async () => {
 	await Blog.deleteMany({});
-	let blogObject = new Blog(initialBlogs[0]);
-	await blogObject.save();
-	blogObject = new Blog(initialBlogs[1]);
-	await blogObject.save();
-	blogObject = new Blog(initialBlogs[2]);
-	await blogObject.save();
-	blogObject = new Blog(initialBlogs[3]);
-	await blogObject.save();
-	blogObject = new Blog(initialBlogs[4]);
-	await blogObject.save();
-	blogObject = new Blog(initialBlogs[5]);
-	await blogObject.save();
+	await User.deleteMany({});
+
+	const user = new User(initialUsers[0]);
+	const savedUser = await user.save();
+
+	// Create blogs with user reference
+	for (let blog of initialBlogs) {
+		const blogObject = new Blog({
+			...blog,
+			user: savedUser._id,
+		});
+		const savedBlog = await blogObject.save();
+		savedUser.blogs = savedUser.blogs.concat(savedBlog._id);
+	}
+	await savedUser.save();
 });
 
 after(async () => {

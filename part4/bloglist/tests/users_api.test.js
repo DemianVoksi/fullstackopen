@@ -9,16 +9,14 @@ const api = supertest(app);
 
 const initialUsers = [
 	{
-		username: 'njjjjjjo',
-		name: 'njjjjjjo',
+		username: 'DemianV',
+		name: 'DemianV',
 		blogs: [],
-		password: '$2b$10$JIWhZCCGCmbGY9mU.9MbFudtqYUe2pWHLXvEWK625.zwLFutXJf5e',
-		_v: 0,
-		_id: '67f53088e324a91aa63a1105',
+		id: '67f947e61491a735492f739e',
 	},
 ];
 
-test.only('user uploads', async () => {
+test('user uploads', async () => {
 	const testUser = {
 		username: 'yes',
 		name: 'yes',
@@ -36,7 +34,7 @@ test.only('user uploads', async () => {
 	assert.strictEqual(usersAtEnd.length, 2);
 });
 
-test.only('username < 3 characters does not get uploaded to db', async () => {
+test('username < 3 characters does not get uploaded to db', async () => {
 	const testUser = {
 		username: 'no',
 		name: 'no',
@@ -54,7 +52,7 @@ test.only('username < 3 characters does not get uploaded to db', async () => {
 	assert.strictEqual(usersAtEnd.length, 1);
 });
 
-test.only('password < 3 characters does not get uploaded to db', async () => {
+test('password < 3 characters does not get uploaded to db', async () => {
 	const testUser = {
 		username: 'yes',
 		name: 'yes',
@@ -70,7 +68,9 @@ test.only('password < 3 characters does not get uploaded to db', async () => {
 beforeEach(async () => {
 	await User.deleteMany({});
 	let userObject = new User(initialUsers[0]);
+	let userObject1 = new User(initialUsers[1]);
 	await userObject.save();
+	await userObject1.save();
 });
 
 after(async () => {

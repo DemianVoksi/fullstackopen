@@ -26,11 +26,15 @@ blogsRouter.post('/', async (request, response, next) => {
 			return response.status(201).json(resultBlog);
 		} else {
 			const blog = new Blog({ content: body, user: user.id });
-			const resultBlog = await blog.save();
-
-			user.notes = user.notes.concat(resultBlog._id);
+			const savedBlog = await blog.save();
+			user.blogs = user.blogs.concat(savedBlog._id);
 			await user.save();
-			return response.status(201).json(resultBlog);
+
+			const populatedBlog = await Blog.findById(savedBlog._id).populate(
+				'user',
+				{ username: 1, name: 1 }
+			);
+			response.status(201).json(populatedBlog);
 		}
 	} catch (error) {
 		errorHandler(error, request, response, next);
