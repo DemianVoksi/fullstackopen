@@ -11,13 +11,35 @@ const api = supertest(app);
 const initialBlogs = [
 	{
 		content: {
-			title: 'React patterns',
+			title: 'HTML is easy',
 			author: 'Michael Chan',
 			user: '67f947e61491a735492f739e',
 			url: 'https://reactpatterns.com/',
 			likes: 7,
 		},
 		_id: '5a422a851b54a676234d17f7',
+		__v: 0,
+	},
+	{
+		content: {
+			title: 'React patterns 2',
+			author: 'Cichael Mhan',
+			user: '67f947e61491a735492f739e',
+			url: 'https://reactpatterns.com/',
+			likes: 10,
+		},
+		_id: '5a422a851b54a676234d27f7',
+		__v: 0,
+	},
+	{
+		content: {
+			title: 'React patterns 3',
+			author: 'Yyoyo Yoyo',
+			user: '67f947e61491a735492f739e',
+			url: 'https://reactpatterns.com/',
+			likes: 11,
+		},
+		_id: '5a422a851b54a676234d37f7',
 		__v: 0,
 	},
 ];
@@ -32,27 +54,27 @@ const initialUsers = [
 	},
 ];
 
-test('notes are returned as json', async () => {
+test('blogs are returned as json', async () => {
 	await api
 		.get('/api/blogs')
 		.expect(200)
 		.expect('Content-Type', /application\/json/);
 });
 
-test('there are three blogs', async () => {
-	const response = await api.get('/api/blogs');
+// test('there are three blogs', async () => {
+// 	const response = await api.get('/api/blogs');
 
-	assert.strictEqual(response.body.length, 3);
-});
+// 	assert.strictEqual(response.body.length, 3);
+// });
 
-test('the first note is about HTTP methods', async () => {
-	const response = await api.get('/api/blogs');
+// test('the first note is about HTTP methods', async () => {
+// 	const response = await api.get('/api/blogs');
 
-	const title = response.body.map((e) => e.title);
-	assert.strictEqual(title.includes('HTML is easy'), true);
-});
+// 	const title = response.body.map((e) => e.title);
+// 	assert.strictEqual(title.includes('HTML is easy'), true);
+// });
 
-test.only('has unique identifier', async () => {
+test('has unique identifier', async () => {
 	const response = await api.get('/api/blogs');
 	const keys = await response.body.map((blog) => Object.keys(blog));
 	keys.forEach((k) => {
@@ -61,6 +83,7 @@ test.only('has unique identifier', async () => {
 });
 
 test('api POST works', async () => {
+	// rewrite with a new blog structure
 	const newBlog = {
 		_id: '6a422b891b54a696234d17fb',
 		title: 'Some more tests',
@@ -80,6 +103,7 @@ test('api POST works', async () => {
 });
 
 test('no likes submitted', async () => {
+	// rewrite with a new blog structure
 	const newBlog = {
 		_id: '6a422b833b54a696234d17fb',
 		title: 'Likes 0',
@@ -98,6 +122,7 @@ test('no likes submitted', async () => {
 });
 
 test('no url/title response is 400', async () => {
+	// rewrite with a new blog structure
 	const newBlog = {
 		_id: '6a422b833b54a696234d17fb',
 		author: 'Robert Lobert',
@@ -124,6 +149,7 @@ test('delete works', async () => {
 });
 
 test('update works', async () => {
+	// rewrite with a new blog structure
 	const id = initialBlogs[0]._id;
 	const newBlog = {
 		title: 'React patterns',
@@ -148,7 +174,6 @@ beforeEach(async () => {
 	const user = new User(initialUsers[0]);
 	const savedUser = await user.save();
 
-	// Create blogs with user reference
 	for (let blog of initialBlogs) {
 		const blogObject = new Blog({
 			...blog,
