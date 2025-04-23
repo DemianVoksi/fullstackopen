@@ -10,22 +10,22 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response, next) => {
 	let body = request.body;
-	const user = await User.findById(body.userId);
+	const user = await User.findById(body.user);
 
 	try {
-		if (!body.title || !body.url) {
+		if (!body.content.title || !body.content.url) {
 			return response.status(400).json({ error: 'bad request' });
 		}
-		if (!body.likes) {
+		if (!body.content.likes) {
 			body.likes = 0;
-			const blog = new Blog({ content: body, user: user.id });
+			const blog = new Blog({ content: body.content, user: user.id });
 			const resultBlog = await blog.save();
 
 			user.notes = user.notes.concat(resultBlog._id);
 			await user.save();
 			return response.status(201).json(resultBlog);
 		} else {
-			const blog = new Blog({ content: body, user: user.id });
+			const blog = new Blog({ content: body.content, user: user.id });
 			const savedBlog = await blog.save();
 			user.blogs = user.blogs.concat(savedBlog._id);
 			await user.save();
