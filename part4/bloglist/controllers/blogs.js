@@ -17,11 +17,11 @@ blogsRouter.post('/', async (request, response, next) => {
 			return response.status(400).json({ error: 'bad request' });
 		}
 		if (!body.content.likes) {
-			body.likes = 0;
+			body.content.likes = 0;
 			const blog = new Blog({ content: body.content, user: user.id });
 			const resultBlog = await blog.save();
 
-			user.notes = user.notes.concat(resultBlog._id);
+			user.blogs = user.blogs.concat(resultBlog._id);
 			await user.save();
 			return response.status(201).json(resultBlog);
 		} else {
@@ -41,16 +41,45 @@ blogsRouter.post('/', async (request, response, next) => {
 	}
 });
 
-blogsRouter.put('/:id', async (request, response) => {
+blogsRouter.put('/:id', async (request, response, next) => {
 	try {
 		const id = request.params.id;
-		const { title, author, url, likes } = request.body;
-		const updatedBlog = await Blog.findByIdAndUpdate(
-			id,
-			{ title, author, url, likes },
-			{ new: true, runValidators: true }
-		);
-		response.status(200).json(updatedBlog).end();
+		const body = request.body;
+
+		if (!body || !body.content) {
+			return response.status(400).json({ error: 'missing content' });
+		}
+
+		const updatedFields = {
+			content: {
+				title: body.content.title,
+				author: body.content.author,
+				url: body.content.url,
+				likes: body.content.likes,
+			},
+		};
+
+		if (body.user) {
+			updatedFields.user = body.user;
+		}
+
+		const updatedBlog = await Blog.findByIdAndUpdate(id, updatedFields, {
+			new: true,
+			runValidators: true,
+		}).populate('user', { username: 1, name: 1 });
+
+		if (!updatedBlog) {
+			return response.status(404).json({ error: 'blog not found' });
+		}
+
+		response.status(200).json(updatedBlog);
+		// 	const { title, author, url, likes } = request.body.content;
+		// 	const updatedBlog = await Blog.findByIdAndUpdate(
+		// 		id,
+		// 		{ title, author, url, likes },
+		// 		{ new: true, runValidators: true }
+		// 	);
+		// 	response.status(200).json(updatedBlog).end();
 	} catch (error) {
 		errorHandler(error);
 	}
@@ -62,7 +91,7 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 		const result = await Blog.findByIdAndDelete(id);
 		return response.status(204).end();
 	} catch (error) {
-		errorHandler(error);
+		next(error);
 	}
 });
 

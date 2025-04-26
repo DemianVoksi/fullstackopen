@@ -83,13 +83,15 @@ test('has unique identifier', async () => {
 });
 
 test('api POST works', async () => {
-	// rewrite with a new blog structure
 	const newBlog = {
+		content: {
+			title: 'Some more tests',
+			author: 'Robert Lobert',
+			url: 'http://example.com',
+			likes: 11,
+		},
+		user: initialUsers[0]._id,
 		_id: '6a422b891b54a696234d17fb',
-		title: 'Some more tests',
-		author: 'Robert Lobert',
-		url: 'http://example.com',
-		likes: 11,
 		__v: 0,
 	};
 
@@ -102,13 +104,15 @@ test('api POST works', async () => {
 	assert.strictEqual(response.body.length, initialBlogs.length + 1);
 });
 
-test('no likes submitted', async () => {
-	// rewrite with a new blog structure
+test.only('no likes submitted', async () => {
 	const newBlog = {
-		_id: '6a422b833b54a696234d17fb',
-		title: 'Likes 0',
-		author: 'Robert Lobert',
-		url: 'http://example.com',
+		content: {
+			title: 'Likes 0',
+			author: 'Robert Lobert',
+			url: 'http://example.com',
+		},
+		user: initialUsers[0]._id,
+		_id: '6a422b891b54a696234d17fb',
 		__v: 0,
 	};
 
@@ -118,15 +122,16 @@ test('no likes submitted', async () => {
 		.expect(201)
 		.expect('Content-Type', /application\/json/);
 	const response = await api.get('/api/blogs');
-	assert.strictEqual(response.body[response.body.length - 1].likes, 0);
+	assert.strictEqual(response.body[response.body.length - 1].content.likes, 0);
 });
 
-test('no url/title response is 400', async () => {
-	// rewrite with a new blog structure
+test.only('no url/title response is 400', async () => {
 	const newBlog = {
-		_id: '6a422b833b54a696234d17fb',
-		author: 'Robert Lobert',
-		likes: 7,
+		content: {
+			author: 'Robert Lobert',
+		},
+		user: initialUsers[0]._id,
+		_id: '6a422b891b54a696234d17fb',
 		__v: 0,
 	};
 
@@ -148,14 +153,16 @@ test('delete works', async () => {
 	assert.strictEqual(response.body.length, initialBlogs.length - 1);
 });
 
-test('update works', async () => {
-	// rewrite with a new blog structure
+test.only('update works', async () => {
 	const id = initialBlogs[0]._id;
 	const newBlog = {
-		title: 'React patterns',
-		author: 'Michael Chan',
-		url: 'https://reactpatterns.com/',
-		likes: 10,
+		content: {
+			title: 'Updated',
+			author: 'Robert Lobert',
+			url: 'http://example.com',
+			likes: 120,
+		},
+		user: initialUsers[0]._id,
 	};
 
 	const request = await api
@@ -164,7 +171,7 @@ test('update works', async () => {
 		.expect(200)
 		.expect('Content-Type', /application\/json/);
 	const response = await api.get('/api/blogs');
-	assert.strictEqual(response.body[0].likes, 10);
+	assert.strictEqual(response.body[0].content.likes, 120);
 });
 
 beforeEach(async () => {
@@ -176,8 +183,9 @@ beforeEach(async () => {
 
 	for (let blog of initialBlogs) {
 		const blogObject = new Blog({
-			...blog,
+			content: blog.content,
 			user: savedUser._id,
+			_id: blog._id,
 		});
 		const savedBlog = await blogObject.save();
 		savedUser.blogs = savedUser.blogs.concat(savedBlog._id);
