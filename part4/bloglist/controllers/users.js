@@ -4,11 +4,15 @@ const User = require('../models/user');
 const { errorHandler } = require('../utils/middleware');
 
 usersRouter.get('/', async (request, response) => {
-	const users = await User.find({}).populate('blogs', {
-		title: 1,
-		author: 1,
-		url: 1,
-		likes: 1,
+	const users = await User.find({}).populate({
+		path: 'blogs',
+		select: {
+			'content.title': 1,
+			'content.author': 1,
+			'content.url': 1,
+			'content.likes': 1,
+			_id: 1,
+		},
 	});
 	response.json(users);
 });

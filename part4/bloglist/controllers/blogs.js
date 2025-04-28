@@ -4,7 +4,7 @@ const { errorHandler } = require('../utils/middleware');
 const User = require('../models/user');
 
 blogsRouter.get('/', async (request, response) => {
-	const blogs = await Blog.find({});
+	const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
 	return response.json(blogs);
 });
 
@@ -18,14 +18,14 @@ blogsRouter.post('/', async (request, response, next) => {
 		}
 		if (!body.content.likes) {
 			body.content.likes = 0;
-			const blog = new Blog({ content: body.content, user: user.id });
+			const blog = new Blog({ content: body.content, user: user._id });
 			const resultBlog = await blog.save();
 
 			user.blogs = user.blogs.concat(resultBlog._id);
 			await user.save();
 			return response.status(201).json(resultBlog);
 		} else {
-			const blog = new Blog({ content: body.content, user: user.id });
+			const blog = new Blog({ content: body.content, user: user._id });
 			const savedBlog = await blog.save();
 			user.blogs = user.blogs.concat(savedBlog._id);
 			await user.save();
